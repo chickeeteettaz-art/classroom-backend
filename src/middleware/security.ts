@@ -14,7 +14,7 @@ const securityMiddleware = async (req:Request,res:Response,next:NextFunction) =>
         switch (role){
             case 'admin':
                 limit=20;
-                message='Too many requests (10), please try again later';
+                message='Too many requests (20), please try again later';
                 break;
             case 'teacher':
                 limit=10;
@@ -59,8 +59,8 @@ const securityMiddleware = async (req:Request,res:Response,next:NextFunction) =>
         }
 
     }catch (e){
-        console.error(`Arcject Middleware error: ${e}`);
-        res.status(500).json({error:'Internal Error', message:' Something went wrong with security middleware'})
+        console.error(`Arcjet Middleware error: ${e}`);
+        return res.status(500).json({error:'Internal Error', message:'Something went wrong with security middleware'});
     }
 }
 

@@ -1,6 +1,6 @@
 import arcjet, {detectBot, shield, slidingWindow, tokenBucket} from "@arcjet/node";
 
-if(!process.env.ARCJET_KEY && process.env.NODE_ENV) throw new Error("Missing ARCJET_KEY");
+if(!process.env.ARCJET_KEY && process.env.NODE_ENV !== "test") throw new Error("Missing ARCJET_KEY");
 
 const aj = arcjet({
 
@@ -16,7 +16,7 @@ const aj = arcjet({
         }),
         slidingWindow({
             mode:'LIVE',
-            interval:'2',
+            interval:'2s',
             max: 5
         })
     ],
