@@ -13,3 +13,4 @@ export type User = typeof demoUsers.$inferSelect;
 export type NewUser = typeof demoUsers.$inferInsert;
 
 export * from './app';
+export * from './auth';
