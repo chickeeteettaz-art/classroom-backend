@@ -9,8 +9,8 @@ export const demoUsers = pgTable('demo_users', {
 });
 
 // Export types for type-safe queries
-export type User = typeof demoUsers.$inferSelect;
-export type NewUser = typeof demoUsers.$inferInsert;
+export type DemoUser = typeof demoUsers.$inferSelect;
+export type NewDemoUser = typeof demoUsers.$inferInsert;
 
 export * from './app';
 export * from './auth';
