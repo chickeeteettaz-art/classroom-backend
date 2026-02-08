@@ -1,6 +1,6 @@
 import express from "express";
 
-import {classes} from "../schema";
+import {classes} from "../schema/app.js";
 import {db} from "../index.js";
 
 const router = express.Router();
