@@ -1,7 +1,7 @@
 import express from "express";
 import {and, desc, eq, getTableColumns, ilike, or, sql} from "drizzle-orm";
 
-import {db} from "../index";
+import {db} from '../../db/index.js'
 import {classes, departments, subjects} from '../schema/app.js'
 import { user } from '../schema/auth.js'
 
