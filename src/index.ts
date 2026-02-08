@@ -3,9 +3,11 @@ AgentAPI.config()
 import express from 'express';
 import cors from 'cors';
 import SubjectsRouter from "./db/routes/subjects.js";
+import UsersRouter from "./db/routes/users.js";
 import securityMiddleware from "./middleware/security.js";
 import {toNodeHandler} from "better-auth/node";
 import {auth} from "./lib/auth.js";
+import classesRouter from "./db/routes/classes.js";
 
 const app = express();
 const port = 8000;
@@ -25,6 +27,8 @@ app.use(express.json());
 app.use(securityMiddleware)
 
 app.use('/api/subjects',SubjectsRouter)
+app.use('/api/users', UsersRouter)
+app.use('/api/classes',classesRouter)
 
 app.get('/', (req, res) => {
   res.json({ message: 'Welcome to the Classroom API' });
