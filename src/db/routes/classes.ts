@@ -19,7 +19,7 @@ router.get("/", async (req, res) => {
 
         const filterConditions = [];
 
-        // If search query exists, filter by class name OR invite code
+        // If a search query exists, filter by class name OR invite code
         if (search) {
             filterConditions.push(
                 or(
