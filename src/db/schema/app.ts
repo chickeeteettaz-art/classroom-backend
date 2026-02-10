@@ -11,7 +11,7 @@ import {
     primaryKey
 } from "drizzle-orm/pg-core";
 import {relations} from "drizzle-orm";
-import {user} from './auth.js'
+import {user} from "./auth";
 
 export const classStatusEnum = pgEnum('class_status', ['active', 'inactive', 'archived']);
 
@@ -58,6 +58,7 @@ export const classes = pgTable('classes', {
 export const enrollments = pgTable('enrollments', {
     studentId: text('student_id').notNull().references(() => user.id, { onDelete: 'cascade' }),
     classId: integer('class_id').notNull().references(() => classes.id, { onDelete: 'cascade' }),
+    ...timestamps
 }, (table) => [
     primaryKey({ columns: [table.studentId, table.classId] }),
     unique('enrollments_student_id_class_id_unique').on(table.studentId, table.classId),

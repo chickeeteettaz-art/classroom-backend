@@ -65,4 +65,41 @@ router.get("/", async (req, res) => {
     }
 });
 
+router.get("/:id", async (req, res) => {
+    try {
+        const [foundUser] = await db.select().from(user).where(eq(user.id, req.params.id));
+        if (!foundUser) return res.status(404).json({ error: "User not found" });
+        res.status(200).json({ data: foundUser });
+    } catch (error) {
+        res.status(500).json({ error: "Failed to fetch user" });
+    }
+});
+
+router.put("/:id", async (req, res) => {
+    try {
+        const [updatedUser] = await db
+            .update(user)
+            .set(req.body)
+            .where(eq(user.id, req.params.id))
+            .returning();
+        if (!updatedUser) return res.status(404).json({ error: "User not found" });
+        res.status(200).json({ data: updatedUser });
+    } catch (error) {
+        res.status(500).json({ error: "Failed to update user" });
+    }
+});
+
+router.delete("/:id", async (req, res) => {
+    try {
+        const [deletedUser] = await db
+            .delete(user)
+            .where(eq(user.id, req.params.id))
+            .returning();
+        if (!deletedUser) return res.status(404).json({ error: "User not found" });
+        res.status(200).json({ data: deletedUser });
+    } catch (error) {
+        res.status(500).json({ error: "Failed to delete user" });
+    }
+});
+
 export default router;

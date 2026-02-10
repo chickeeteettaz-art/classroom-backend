@@ -4,6 +4,7 @@ import {and, desc, eq, getTableColumns, ilike, or, sql} from "drizzle-orm";
 import {db} from '../../db/index.js'
 import {classes, departments, subjects} from '../schema/app.js'
 import { user } from '../schema/auth.js'
+import enrollments from "./enrollments";
 
 const router = express.Router();
 
@@ -113,6 +114,41 @@ router.get('/:id', async (req, res) => {
     res.status(200).json({ data: classDetails });
 })
 
+router.put('/:id', async (req, res) => {
+    try {
+        const id = parseInt(req.params.id);
+        if (isNaN(id)) return res.status(400).json({ error: "Invalid ID" });
+
+        const [updatedClass] = await db
+            .update(classes)
+            .set(req.body)
+            .where(eq(classes.id, id))
+            .returning();
+
+        if (!updatedClass) return res.status(404).json({ error: "Class not found" });
+        res.status(200).json({ data: updatedClass });
+    } catch (e) {
+        res.status(500).json({ error: "Failed to update class" });
+    }
+})
+
+router.delete('/:id', async (req, res) => {
+    try {
+        const id = parseInt(req.params.id);
+        if (isNaN(id)) return res.status(400).json({ error: "Invalid ID" });
+
+        const [deletedClass] = await db
+            .delete(classes)
+            .where(eq(classes.id, id))
+            .returning();
+
+        if (!deletedClass) return res.status(404).json({ error: "Class not found" });
+        res.status(200).json({ data: deletedClass });
+    } catch (e) {
+        res.status(500).json({ error: "Failed to delete class" });
+    }
+})
+
 router.post('/', async (req, res) => {
     try {
         const [createdClass] = await db
@@ -126,6 +162,26 @@ router.post('/', async (req, res) => {
     } catch (e) {
         console.error(`POST /classes error ${e}`);
         res.status(500).json({ error: e})
+    }
+})
+
+router.post('/join', async (req, res) => {
+    try {
+        const { inviteCode, studentId } = req.body;
+        if (!inviteCode || !studentId) return res.status(400).json({ error: "Missing fields" });
+
+        const [foundClass] = await db.select().from(classes).where(eq(classes.inviteCode, inviteCode));
+        if (!foundClass) return res.status(404).json({ error: "Invalid invite code" });
+
+        // @ts-ignore
+        const [{ count }] = await db.select({ count: sql<number>`count(*)` }).from(enrollments).where(eq(enrollments.classId, foundClass.id));
+        if (count >= foundClass.capacity) return res.status(400).json({ error: "Class is full" });
+
+        // @ts-ignore
+        const [newEnrollment] = await db.insert(enrollments).values({ studentId, classId: foundClass.id }).returning();
+        res.status(201).json({ data: newEnrollment });
+    } catch (e) {
+        res.status(500).json({ error: "Failed to join class. Maybe you are already enrolled?" });
     }
 })
 

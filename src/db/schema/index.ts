@@ -12,5 +12,5 @@ export const demoUsers = pgTable('demo_users', {
 export type DemoUser = typeof demoUsers.$inferSelect;
 export type NewDemoUser = typeof demoUsers.$inferInsert;
 
-export * from './app.js';
-export * from './auth.js';
+export * from './app';
+export * from './auth';
